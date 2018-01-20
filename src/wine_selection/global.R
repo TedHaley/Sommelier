@@ -6,8 +6,6 @@ suppressMessages({
   library(tidyverse)
   library(magrittr)
   library(dplyr)
-  # library(rprojroot)
-  # library(ggthemes)
   library(stringr)
   library(gapminder)
   library(scales)
@@ -17,40 +15,42 @@ suppressMessages({
   # library(ggvis)
   # library(gganimate) # library(devtools); install_github("dgrtwo/gganimate")
   library(colourpicker) # library(devtools); devtools::install_github("daattali/colourpicker")
-  library(here)
+  library(tm)
+  library(wordcloud)
+  library(RColorBrewer)
 })
 
-# Directories are not necessary in this app, but I am leaving the code in, as
-# you may want to know how to handle directories for apps hosted on shinyapps.io
-# in future assignments.
-rootDir <- here::here()
+# import wine list
+wine_list <- read.csv(file = ("../../data/winemag-data_first150k.csv"))
 
-# If this leaves us in the shiny app dir, then we're good. Otherwise, we're in
-# the DSCI_instructors repo, and we should navigate to the appropriate
-# subdirectory.
+# select columns to keep
+wine_list <- wine_list %>% 
+  select("country", "description", "points", "price", "province", "variety", "winery")
 
-# shinyapps.io server prints the following dir:
-# "/srv/connect/apps/lab1solutions"
-# Insert your shinyapps.io app name here (the '$' is regex for 'end of string'):
-if (str_detect("lab1solutions$", rootDir)) {
-  # Taking advantage of R's lack of block scope
-  # appDir will be a global variable
-  appDir <- rootDir
-} else {
-  lab1Dir <- file.path(rootDir, "solutions", "lab1")
-  appDir <- file.path(lab1Dir, "shiny_app")
-}
+# remove rows with missing information
+wine_list[wine_list==""]<-NA
+wine_list<-wine_list[complete.cases(wine_list),]
 
-# construct named vector of possible y-axis variables. This will go into a selectInput
-yAxisVars <- c("Life Expectancy" = "lifeExp", "Population" = "pop", "GDP Per Capita" = "gdpPercap")
-# construct the inverse of the vector to allow R to grab the selectInput result
-# and use the pretty name as an axis label. Unfortunately you must select from a
-# vector by the name, and not the actual string value
-yAxisNames <- c("lifeExp" = "Life Expectancy", "pop" = "Population", "gdpPercap" = "GDP Per Capita")
+# Words not to include in word cloud
+no_include = c("wine", "drink", "flavors", "nose", "palate", "bottling", "notes", "now", "cellar")
 
-# construct possible geoms to display on the graph with pretty names for selectInput
-geomsToChoose <- c(
-  "Point" = "geom_point",
-  "Boxplot" = "geom_boxplot",
-  "Violin" = "geom_violin"
-)
+# Word cloud function
+makeWordCloud <- function(documents) {
+  corpus = Corpus(VectorSource(tolower(documents)))
+  corpus = tm_map(corpus, removePunctuation)
+  corpus = tm_map(corpus, removeWords, stopwords("english"))
+  corpus = tm_map(corpus, removeWords, no_include)
+  
+  frequencies = DocumentTermMatrix(corpus)
+  word_frequencies = as.data.frame(as.matrix(frequencies))
+  
+  words <- colnames(word_frequencies)
+  freq <- colSums(word_frequencies)
+  wordcloud(words, freq,
+            min.freq=sort(freq, decreasing=TRUE)[[50]],
+            max.words=200, random.order=FALSE, rot.per=0.35, 
+            colors=brewer.pal(8, "Dark2")) 
+}  
+
+
+makeWordCloud(wine_list[["description"]][1:50])

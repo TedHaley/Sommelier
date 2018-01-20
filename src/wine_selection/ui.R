@@ -1,7 +1,7 @@
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Wine Selection Tool"),
+  titlePanel("Lab 1 Solutions"),
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
