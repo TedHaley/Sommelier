@@ -18,6 +18,7 @@ suppressMessages({
   library(tm)
   library(wordcloud)
   library(RColorBrewer)
+  library(DT)
 })
 
 # import wine list
@@ -39,7 +40,7 @@ wine_list<-wine_list[complete.cases(wine_list),]
 # Words not to include in word cloud
 no_include = c("riesling", "malbec", "shiraz", "chardonnay", "cabernet sauvignon", "merlot","sauvignon blanc", "rosé", "pinot grigio","pinot noir", "pinot", "noir", "moscato","merlot","wine", "drink", "flavors", "nose", "palate", "bottling", "notes", "now", "cellar", "made", "2007", "will", "long", "ever","shows","vineyard", "vineyards","expression")
 
-# Word cloud function
+# Word cloud function: Adapted from https://www.kaggle.com/hiteshp/weekend-which-wine-wins
 makeWordCloud <- function(documents) {
   corpus = Corpus(VectorSource(tolower(documents)))
   corpus = tm_map(corpus, removePunctuation)

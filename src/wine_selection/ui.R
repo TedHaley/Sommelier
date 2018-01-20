@@ -1,3 +1,5 @@
+# ui.R
+
 shinyUI(fluidPage(
 
   # Application title
@@ -43,7 +45,7 @@ shinyUI(fluidPage(
     mainPanel(
       plotOutput("wordCloud"),
       br(), br(),
-      tableOutput("wineTable")
+      DT::dataTableOutput("wineTable")
     )
   )
 ))

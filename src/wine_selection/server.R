@@ -1,19 +1,17 @@
+# Server.R
 
 shinyServer(function(input, output) {
 
   # Filter with all inputs
   filteredTable <- reactive({
-    
       wine_list %>%
       select("winery", "designation", "variety", "country", "province", "points", "price") %>% 
       filter(price >= input$priceInput[1],
             price <= input$priceInput[2],
             points >= input$pointInput[1],
             points <= input$pointInput[2],
-            variety %in% input$varietyInput) %>%
-      arrange(desc(points)) %>% 
-      top_n(n = 10)
-  
+            variety %in% input$varietyInput) %>% 
+      arrange(desc(points))
     })
   
   # Filter only for wine type
@@ -40,7 +38,7 @@ shinyServer(function(input, output) {
 
     })
     
-    output$wineTable <- renderTable({
+    output$wineTable <- DT::renderDataTable({
       filteredTable()
     })
 
