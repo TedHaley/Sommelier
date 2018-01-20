@@ -28,7 +28,7 @@ wines_include <- c("Riesling", "Malbec", "Shiraz", "Chardonnay", "Cabernet Sauvi
 
 # select columns to keep
 wine_list <- wine_list %>% 
-  select("country", "description", "points", "price", "province", "variety", "winery") %>% 
+  select("country", "description", "designation", "points", "price", "province", "variety", "winery") %>% 
   filter(price<500) %>% 
   filter(variety %in% wines_include)
 
@@ -37,7 +37,7 @@ wine_list[wine_list==""]<-NA
 wine_list<-wine_list[complete.cases(wine_list),]
 
 # Words not to include in word cloud
-no_include = c("Riesling", "Malbec", "Shiraz", "Chardonnay", "Cabernet Sauvignon", "Merlot","Sauvignon Blanc", "Rosé", "Pinot Grigio","Pinot Noir", "Moscato","merlot","wine", "drink", "flavors", "nose", "palate", "bottling", "notes", "now", "cellar", "made", "2007", "will", "long", "ever","shows","vineyard", "vineyards","expression")
+no_include = c("riesling", "malbec", "shiraz", "chardonnay", "cabernet sauvignon", "merlot","sauvignon blanc", "rosé", "pinot grigio","pinot noir", "pinot", "noir", "moscato","merlot","wine", "drink", "flavors", "nose", "palate", "bottling", "notes", "now", "cellar", "made", "2007", "will", "long", "ever","shows","vineyard", "vineyards","expression")
 
 # Word cloud function
 makeWordCloud <- function(documents) {
@@ -52,7 +52,7 @@ makeWordCloud <- function(documents) {
   words <- colnames(word_frequencies)
   freq <- colSums(word_frequencies)
   wordcloud(words, freq,
-            min.freq=sort(freq, decreasing=TRUE)[[50]],
+            min.freq=sort(freq, decreasing=TRUE)[[100]],
             max.words=200, random.order=FALSE, rot.per=0.35, 
             colors=brewer.pal(8, "YlOrRd")) 
 }  

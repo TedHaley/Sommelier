@@ -25,10 +25,10 @@ shinyUI(fluidPage(
       sliderInput(
         "pointInput",
         "Rating (points):", #Title
-        min = 0,
-        max = 100,
+        min = min(wine_list$points),
+        max = max(wine_list$points),
         step = 1,
-        value = c(0, 100)
+        value = c(min(wine_list$points), max(wine_list$points))
       ),
       selectInput(
         "varietyInput", 
@@ -43,7 +43,7 @@ shinyUI(fluidPage(
     mainPanel(
       plotOutput("wordCloud"),
       br(), br(),
-      tableOutput("results")
+      tableOutput("wineTable")
     )
   )
 ))
