@@ -5,11 +5,14 @@ library(wordcloud)
 library(RColorBrewer)
 
 wine_list <- read.csv(file = ("../../data/winemag-data_first150k.csv"))
+
+wine_list <- wine_list %>% 
+  select("country", "description", "points", "price", "province", "variety", "winery") %>% 
+  filter(price<500) %>% 
+  filter(variety %in% c("Riesling", "Malbec", "Shiraz", "Chardonnay", "Cabernet Sauvignon", "Merlot","Sauvignon Blanc", "Rosé", "Pinot Grigio", "Moscato"))
+
 wine_list[wine_list==""]<-NA
 wine_list<-wine_list[complete.cases(wine_list),]
-
-#wine_list_reduced <- wine_list %>% 
-  
 
 View(wine_list)
 

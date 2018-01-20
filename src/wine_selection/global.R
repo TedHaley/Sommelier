@@ -14,7 +14,7 @@ suppressMessages({
   # library(htmlwidgets)
   # library(ggvis)
   # library(gganimate) # library(devtools); install_github("dgrtwo/gganimate")
-  library(colourpicker) # library(devtools); devtools::install_github("daattali/colourpicker")
+  library(colourpicker) 
   library(tm)
   library(wordcloud)
   library(RColorBrewer)
@@ -23,16 +23,21 @@ suppressMessages({
 # import wine list
 wine_list <- read.csv(file = ("../../data/winemag-data_first150k.csv"))
 
+# Wine varieties to be included
+wines_include <- c("Riesling", "Malbec", "Shiraz", "Chardonnay", "Cabernet Sauvignon", "Merlot","Sauvignon Blanc", "Rosé", "Pinot Grigio","Pinot Noir", "Moscato")
+
 # select columns to keep
 wine_list <- wine_list %>% 
-  select("country", "description", "points", "price", "province", "variety", "winery")
+  select("country", "description", "points", "price", "province", "variety", "winery") %>% 
+  filter(price<500) %>% 
+  filter(variety %in% wines_include)
 
 # remove rows with missing information
 wine_list[wine_list==""]<-NA
 wine_list<-wine_list[complete.cases(wine_list),]
 
 # Words not to include in word cloud
-no_include = c("wine", "drink", "flavors", "nose", "palate", "bottling", "notes", "now", "cellar")
+no_include = c("Riesling", "Malbec", "Shiraz", "Chardonnay", "Cabernet Sauvignon", "Merlot","Sauvignon Blanc", "Rosé", "Pinot Grigio","Pinot Noir", "Moscato","merlot","wine", "drink", "flavors", "nose", "palate", "bottling", "notes", "now", "cellar", "made", "2007", "will", "long", "ever","shows","vineyard", "vineyards","expression")
 
 # Word cloud function
 makeWordCloud <- function(documents) {
@@ -49,8 +54,7 @@ makeWordCloud <- function(documents) {
   wordcloud(words, freq,
             min.freq=sort(freq, decreasing=TRUE)[[50]],
             max.words=200, random.order=FALSE, rot.per=0.35, 
-            colors=brewer.pal(8, "Dark2")) 
+            colors=brewer.pal(8, "YlOrRd")) 
 }  
 
 
-makeWordCloud(wine_list[["description"]][1:50])
