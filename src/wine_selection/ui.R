@@ -5,9 +5,10 @@ shinyUI(fluidPage(
   # Application title
   titlePanel("Wine Selection Tool"),
 
-  # Sidebar with a slider input for number of bins
+  # Sidebar
   sidebarLayout(
     
+    # Panel with description
     sidebarPanel(
       width = 3,
       p(
@@ -16,6 +17,8 @@ shinyUI(fluidPage(
         "Filter the dataset using the selection tools below:"
       ),
       hr(),
+      
+      # Price range slider
       sliderInput(
         "priceInput",
         "Price Range ($):", #Title
@@ -24,6 +27,8 @@ shinyUI(fluidPage(
         step = 1,
         value = c(min(wine_list$price), max(wine_list$price))
       ),
+      
+      # Point range slider
       sliderInput(
         "pointInput",
         "Rating (points):", #Title
@@ -32,19 +37,50 @@ shinyUI(fluidPage(
         step = 1,
         value = c(min(wine_list$points), max(wine_list$points))
       ),
+      
+      # Wine variety selector (dropdown)
       selectInput(
         "varietyInput", 
         "Variety:",
         multiple = TRUE,
         choices = sort(wines_include),
-        selected = "Pinot Noir"
-      )
+        selected = c("Pinot Noir", "Merlot", "Shiraz")
+      ),
+      
+      # Country selector (dropdown)
+      selectInput(
+        "countryInput", 
+        "Country of Origin:",
+        multiple = TRUE,
+        choices = sort(unique(wine_list$country)),
+        selected = c("Italy", "US", "France", "Germany")
+      ),
+      
+      # Number of points to include in linear regression model
+      numericInput(
+        "numberInput", 
+        "Value Chart Wines:",
+        value = 10, min = 5)
     ),
 
-    # Show a plot of the generated distribution
+    # Main panel area
     mainPanel(
-      plotOutput("wordCloud"),
-      br(), br(),
+      
+      # Tab selection in main panel
+      tabsetPanel(
+        
+        # First tab panel
+        tabPanel("Flavour Profile", plotOutput("wordCloud")),
+        
+        # Second tab panel
+        tabPanel("Value Chart", plotOutput("scatterPlot"))
+      ),
+      
+      # Spaces (padding)
+      br(), 
+      br(),
+      
+      # output the rendered data table
       DT::dataTableOutput("wineTable")
     )
   )

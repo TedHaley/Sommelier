@@ -4,21 +4,16 @@
 suppressMessages({
   library(shiny)
   library(tidyverse)
-  library(magrittr)
   library(dplyr)
   library(stringr)
   library(gapminder)
   library(scales)
-  # library(tidyr)
-  # library(plotly)
-  # library(htmlwidgets)
-  # library(ggvis)
-  # library(gganimate) # library(devtools); install_github("dgrtwo/gganimate")
   library(colourpicker) 
   library(tm)
   library(wordcloud)
   library(RColorBrewer)
   library(DT)
+  library(ngram)
 })
 
 # import wine list
