@@ -17,7 +17,7 @@ suppressMessages({
 })
 
 # import wine list
-wine_list <- read.csv(file = ("../../data/winemag-data_first150k.csv"))
+wine_list <- read.csv(file = ("data/winemag-data_first150k.csv"))
 
 # Wine varieties to be included
 wines_include <- c("Riesling", "Malbec", "Shiraz", "Chardonnay", "Cabernet Sauvignon", "Merlot","Sauvignon Blanc", "Rosé", "Pinot Grigio","Pinot Noir", "Moscato")

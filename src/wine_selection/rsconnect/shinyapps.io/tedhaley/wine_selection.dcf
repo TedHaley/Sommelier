@@ -1,0 +1,12 @@
+name: wine_selection
+title: wine_selection
+username:
+account: tedhaley
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 258849
+bundleId: 1185090
+url: https://tedhaley.shinyapps.io/wine_selection/
+when: 1516508275.96537
+asMultiple: FALSE
+asStatic: FALSE
