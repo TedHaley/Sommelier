@@ -9,6 +9,10 @@ This visualization tool helps consumers choose an appropriate wine.
 
 [Milestone 2: Deployed Shiny App](https://tedhaley.shinyapps.io/wine_selection/)
 
+[Milestone 2: Source Code](https://github.com/TedHaley/Wine_Selection/tree/master/src/wine_selection)
+
+[Milestone 2: Rendered Milestone Writeup](https://github.com/TedHaley/Wine_Selection/blob/master/doc/writeup_milestone2.pdf)
+
 
 
 
