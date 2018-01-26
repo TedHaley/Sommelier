@@ -14,7 +14,9 @@ shinyUI(fluidPage(
       p(
         "Welcome to the Wine Selection Tool for the ",
         a(href = "https://www.kaggle.com/zynicide/wine-reviews/data", "Wine Ratings"), "dataset.",
-        "Filter the dataset using the selection tools below:"
+        "\nFind your favourite flavours and then move onto the value chart to find the best selection for your money.",
+        hr()
+        #strong("ALLOW THE PLOT TO FULLY RENDER BEFORE NEXT SELECTION!")
       ),
       hr(),
       
@@ -44,7 +46,7 @@ shinyUI(fluidPage(
         "Variety:",
         multiple = TRUE,
         choices = sort(wines_include),
-        selected = c("Pinot Noir", "Merlot", "Shiraz")
+        selected = c("Pinot Noir", "Merlot", "Shiraz", "Malbec","Moscato")
       ),
       
       # Country selector (dropdown)
@@ -53,14 +55,9 @@ shinyUI(fluidPage(
         "Country of Origin:",
         multiple = TRUE,
         choices = sort(unique(wine_list$country)),
-        selected = c("Italy", "US", "France", "Germany")
-      ),
+        selected = c("Italy", "US", "France", "Germany","Spain","Argentina")
+      )
       
-      # Number of points to include in linear regression model
-      numericInput(
-        "numberInput", 
-        "Value Chart Wines:",
-        value = 10, min = 5)
     ),
 
     # Main panel area
@@ -70,10 +67,20 @@ shinyUI(fluidPage(
       tabsetPanel(
         
         # First tab panel
-        tabPanel("Flavour Profile", plotOutput("wordCloud")),
+        tabPanel(title = h2("1. Flavour Profile"),
+                 h4("Prominent flavours of your current selection", align = "center"),
+                 hr(),
+                 plotOutput("wordCloud")),
         
         # Second tab panel
-        tabPanel("Value Chart", plotOutput("scatterPlot"))
+        tabPanel(title = h2("2. Value Chart"), 
+                 plotOutput("scatterPlot"),
+                 
+                 # Number of points to include in linear regression model
+                 numericInput(
+                   "numberInput", 
+                   "Wines to compare in the chart:",
+                   value = 10, min = 2, max = 20))
       ),
       
       # Spaces (padding)

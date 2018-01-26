@@ -48,7 +48,7 @@ makeWordCloud <- function(documents) {
   words <- colnames(word_frequencies)
   freq <- colSums(word_frequencies)
   wordcloud(words, freq,
-            min.freq=sort(freq, decreasing=TRUE)[[100]],
+            min.freq=sort(freq, decreasing=TRUE)[[10]],
             max.words=200, random.order=FALSE, rot.per=0.35, 
             colors=brewer.pal(8, "YlOrRd")) 
 }  

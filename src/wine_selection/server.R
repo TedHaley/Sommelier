@@ -1,11 +1,16 @@
 # Server.R
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
   # Filter for the scatter plot
   filteredScatter <- reactive({
-    wine_list <- wine_list %>%
-      select("winery", "designation", "variety", "country", "province", "points", "price") %>% 
+    
+    #Filter wineset
+    wine_list1 <- wine_list %>%
+      select("winery", "designation", "variety", "country", "province", "points", "price")
+    wine_list1 <- unique( wine_list1[ , 1:7 ] )
+    
+    wine_list2 <- wine_list1 %>%
       filter(price >= input$priceInput[1],
              price <= input$priceInput[2],
              points >= input$pointInput[1],
@@ -13,34 +18,22 @@ shinyServer(function(input, output) {
              variety %in% input$varietyInput,
              country %in% input$countryInput) %>% 
       arrange(desc(points))
-    wine_list <- wine_list[1:input$numberInput,]
+    
   })
   
-  # Filter for the table
-  filteredTable <- reactive({
-      wine_list %>%
-        select("winery", "designation", "variety", "country", "province", "points", "price") %>% 
-        filter(price >= input$priceInput[1],
-            price <= input$priceInput[2],
-            points >= input$pointInput[1],
-            points <= input$pointInput[2],
-            variety %in% input$varietyInput,
-            country %in% input$countryInput) %>% 
-        arrange(desc(points))
-  })
-  
-  # Filter only for wine type for the word cloud
+  # Filter for the word cloud
   filteredCloud <- reactive({
     
     wine_list %>%
       filter(variety %in% input$varietyInput,
+             country %in% input$countryInput,
              price >= input$priceInput[1],
              price <= input$priceInput[2],
              points >= input$pointInput[1],
              points <= input$pointInput[2]) %>%
       arrange(desc(points))
     
-  })
+    })
   
     # Render the word cloud
     output$wordCloud <- renderPlot({
@@ -53,15 +46,35 @@ shinyServer(function(input, output) {
       wineCloud <- filteredCloud()  
       
       # Plot the word cloud
-      makeWordCloud(wineCloud[["description"]][1:100])
+      makeWordCloud(wineCloud[["description"]][1:length(wineCloud)])
 
     })
+    
+    #plot the rendered data table
+    output$wineTable <- DT::renderDataTable(
+      filteredScatter(),
+      server = F
+    )
     
     # Render scatter plot
     output$scatterPlot <- renderPlot({
       
+      if (is.null(filteredScatter)) {
+        return()
+      }
+      
       # transfer changes to new name of table
       scatterPoints <- filteredScatter()
+      
+      if (length(scatterPoints$price)<input$numberInput){
+        scatterPoints <- scatterPoints[1:length(scatterPoints$price),]
+        
+      }else {
+        scatterPoints <- scatterPoints[1:input$numberInput,]
+      }
+      
+      # Table input
+      s = input$wineTable_rows_selected
       
       # Scatter plot labels
       scatterPoints <- scatterPoints %>% 
@@ -73,26 +86,33 @@ shinyServer(function(input, output) {
       scatterPoints$residuals <- residuals(fit) # Save the residual values
       
       # plot for above/below linear model. Adapted from https://drsimonj.svbtle.com/visualising-residuals
-      ggplot(scatterPoints, aes(x = points, y = price)) +
-        geom_smooth(method = "lm", se = FALSE, color = "lightgrey") +
-        geom_segment(aes(xend = points, yend = predicted), alpha = .2) +
-        geom_point(aes(color = residuals, size = 4)) +
-        scale_color_distiller(palette="Spectral", guide = "colourbar", name = "Value Meter") +
-        scale_size(guide=FALSE) +
-        geom_point(aes(y = predicted), shape = 1) +
-        geom_label(label = scatterPoints$name, fontface = "bold", hjust = 0, nudge_x = 0.05, size = 3) +
-        ggtitle("Blue : Good Value || Red : Poor Value") +
-        xlab("Points") +
-        scale_y_continuous(labels=scales::dollar_format())+
-        ylab("Price") +
+      value_plt <- ggplot(scatterPoints, aes(x = points, y = price)) +
         theme_bw() + 
-        scale_x_continuous(limits = c(min(scatterPoints$points)-0.5, max(scatterPoints$points)+0.5))
+        scale_x_continuous(limits = c(min(scatterPoints$points)-1, max(scatterPoints$points)+1)) +
+        scale_y_continuous(labels=scales::dollar_format()) +
+        ggtitle("Blue : Good Value\nRed : Poor Value") +
+        xlab("Points") +
+        ylab("Price")
+      
+      if (is.null(s)){
+        value_plt +
+          geom_point(aes(color = residuals, size = 4)) +
+          scale_color_distiller(palette="Spectral", guide = "colourbar", name = "Value Meter:") +
+          scale_size(guide=FALSE) +
+          geom_label(label = scatterPoints$name, fontface = "bold", hjust = 0, nudge_x = 0.05, size = 3)
         
+      } else if (length(s)>0){
+        value_plt +
+          geom_point(aes(color = residuals, size = 4)) +
+          scale_color_distiller(palette="Spectral", guide = "colourbar", name = "Value Meter:") +
+          geom_point(data = scatterPoints[c(s),],aes(x = points, y = price, size = 4)) +
+          scale_size(guide=FALSE) +
+          geom_label(label = scatterPoints$name, fontface = "bold", hjust = 0, nudge_x = 0.05, size = 3)
+        
+      }else{
+        return()
+      }
+
     })
     
-    #plot the rendered data table
-    output$wineTable <- DT::renderDataTable({
-      filteredTable()
-    })
-
 })
