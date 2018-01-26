@@ -75,6 +75,7 @@ shinyServer(function(input, output, session) {
       
       # Table input
       s = input$wineTable_rows_selected
+      scatter2 <- scatterPoints[c(s),]
       
       # Scatter plot labels
       scatterPoints <- scatterPoints %>% 
@@ -105,7 +106,7 @@ shinyServer(function(input, output, session) {
         value_plt +
           geom_point(aes(color = residuals, size = 4)) +
           scale_color_distiller(palette="Spectral", guide = "colourbar", name = "Value Meter:") +
-          geom_point(data = scatterPoints[c(s),],aes(x = points, y = price, size = 4)) +
+          geom_point(data = scatter2 ,aes(x = points, y = price, size = 4)) +
           scale_size(guide=FALSE) +
           geom_label(label = scatterPoints$name, fontface = "bold", hjust = 0, nudge_x = 0.05, size = 3)
         
