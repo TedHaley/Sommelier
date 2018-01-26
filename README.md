@@ -1,5 +1,10 @@
 # Wine_Selection
-This visualization tool helps consumers choose an appropriate wine.
+This visualization tool helps consumers choose an appropriate wine based off of their tastes and budget.
+
+## Usage
+To use the shiny app, follow [this link](https://tedhaley.shinyapps.io/wine_selection/)
+
+To use this app locally, clone the repository and run the R scripts in the SRC folder.
 
 ## Milestone 1
 [Milestone 1: Wine Selection](https://github.com/TedHaley/Wine_Selection/releases)
@@ -19,7 +24,7 @@ This visualization tool helps consumers choose an appropriate wine.
 
 [Milestone 3: Rendered Reflection](https://github.com/TedHaley/Wine_Selection/blob/master/doc/3.Reflection.pdf)
 
-[Milestone 3: Rendered Reflection](https://github.com/TedHaley/Wine_Selection/blob/master/doc/3.Feedback.pdf)
+[Milestone 3: Rendered Feedback](https://github.com/TedHaley/Wine_Selection/blob/master/doc/3.Feedback.pdf)
 
 
 
