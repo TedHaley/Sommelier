@@ -1,4 +1,4 @@
-# Wine_Selection
+# Sommelier
 This visualization tool helps consumers choose an appropriate wine based off of their tastes and budget.
 
 ## Usage
